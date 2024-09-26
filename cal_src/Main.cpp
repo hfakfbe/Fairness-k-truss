@@ -84,9 +84,9 @@ std::tuple<VPII, VI, int> solve(Graph& G, int q, int F, int b){
 }
 
 int main(){
-    Graph G = read_graph("../dblp_A4.txt");
+    Graph G = read_graph("../rand.txt");
 
-    std::vector<std::tuple<int, int, int>> query = read_query("../dblpqry.txt");
+    std::vector<std::tuple<int, int, int>> query = read_query("../rand_qry.txt");
 
     for(int i = 0; i < query.size(); i ++){
         auto [q, F, b] = query[i];

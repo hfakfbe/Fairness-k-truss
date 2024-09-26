@@ -42,10 +42,10 @@ debug: $(MAIN_TARGET)
 
 # 清理
 clean:
-	rm -f *.o *
+	rm -f $(ALL_TARGETS) *.o
 
 # 定义所有目标，以便在clean中使用
-ALL_TARGETS = $(MAIN_TARGET) $(TEST_TARGET)
+ALL_TARGETS = $(MAIN_TARGET) TestL Testmaxk
 
 # 伪目标
 .PHONY: all clean debug test
