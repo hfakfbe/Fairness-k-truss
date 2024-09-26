@@ -182,22 +182,38 @@ struct hash_map {
         : maxn(n + 1), maxm(m + 1), cnt(0), e(maxm * 8), h(maxm * 4), mod(maxm * 4) {}
 };
 
+// 读取图
 Graph read_graph(std::string file);
 
+// 读取查询
 std::vector<std::tuple<int, int, int>> read_query(std::string file);
 
+// truss分解
 VI decomposition(const Graph& G);
 
+// 计算三角连通3-truss
+VI compute_triangle_three_truss(const Graph& G);
+
+// 计算极大锚定k-truss
+VI compute_maximal_ktruss(const Graph& G, const VI& tritruss, int k, int q);
+
+// 计算k上界
 std::pair<Graph, int> compute_maxk(const Graph& G, int q, int F);
 
+// 初次计算性质
 Property compute_property(const Graph& G, int q, int F);
 
+// 更新性质
 Property update_property(const Graph& G, VI& T, int q, int F);
 
+// 计算边集T代表的社区的val
 int compute_value(const Graph& G, const VI& T, int F);
 
+// 计算layer
 Layer compute_layer(const Graph& G, int q, int F);
 
+// 计算UB
 VI compute_UB(const Graph& G, const Layer& L, int q, int F);
 
+// 计算anchor
 std::pair<VI, int> compute_anchor(const Graph& G, int q, int F);

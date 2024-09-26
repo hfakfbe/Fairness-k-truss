@@ -12,12 +12,12 @@ SOURCES = Anchor.cpp Decomposition.cpp Layer.cpp Maxk.cpp Property.cpp Read.cpp
 OBJECTS = $(SOURCES:.cpp=.o)
 MAIN_SOURCE = Main.cpp
 MAIN_OBJECT = Main.o
-TEST_SOURCE = TestL.cpp
-TEST_OBJECT = TestL.o
+TEST_SOURCE = Testmaxk.cpp
+TEST_OBJECT = Testmaxk.o
 
 # 定义目标程序
 MAIN_TARGET = Main
-TEST_TARGET = TestL
+TEST_TARGET = Testmaxk
 
 # 默认目标
 all: $(MAIN_TARGET)
@@ -38,11 +38,11 @@ $(TEST_TARGET): $(TEST_OBJECT) $(OBJECTS)
 
 # 编译debug版本
 debug: CXXFLAGS := $(CXXFLAGS_DEBUG)
-debug: $(MAIN_TARGET) $(TEST_TARGET)
+debug: $(MAIN_TARGET)
 
 # 清理
 clean:
-	rm -f $(ALL_TARGETS) $(OBJECTS) $(MAIN_OBJECT) $(TEST_OBJECT)
+	rm -f *.o *
 
 # 定义所有目标，以便在clean中使用
 ALL_TARGETS = $(MAIN_TARGET) $(TEST_TARGET)
