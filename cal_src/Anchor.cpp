@@ -382,7 +382,7 @@ std::pair<VI, int> compute_anchor(const Graph& G, int q, int F){
         }
         //比较
 #ifdef COMPACTNESS
-        if(query_dist > qdres){
+        if(query_dist > qdres && valres > 0){
             maxval = valres;
             query_dist = qdres;
             argmaxval = layerpoint[i];

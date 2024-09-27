@@ -100,6 +100,9 @@ std::pair<Graph, int> compute_maxk(const Graph& G, int q, int F){
     int l = 2, r = 2;
     for(auto eid : G.adj[q]){
         r = std::max(r, G.prop.trussness[eid]);
+        // if(G.prop.trussness[eid] > 6){
+        //     std::cerr << G.edg[eid].first << " " << G.edg[eid].second << " " << G.prop.trussness[eid] << " ?\n";
+        // }
     }
 
     auto check = [&](int x){

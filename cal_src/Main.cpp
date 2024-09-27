@@ -9,12 +9,12 @@ std::tuple<VPII, VI, int> solve(Graph& G, int q, int F, int b){
     end = clock();
     std::cerr << end - beg << "us\n";
     
-    
-    // std::cerr << "compute_maxk\n";
+    std::cerr << "compute_maxk\n";
     auto [G2, kmax] = compute_maxk(G, q, F);
     std::cerr << "G2 has " << G2.m << " edges\n";
-    // kmax = 70;
+    // int kmax = 52;
     // Graph G2 = G;
+
     if(kmax == 2){
         std::cerr << "not exist\n";
         return {VPII(), VI(), 2};
@@ -62,7 +62,9 @@ std::tuple<VPII, VI, int> solve(Graph& G, int q, int F, int b){
             //     std::cerr << T1[i] << " \n"[i == G2.m - 1];
             // }
 
-            if(compute_value(G2, T1, F) == F * G2.A){
+            int curval = compute_value(G2, T1, F);
+            std::cerr << "now the val is " << curval << "\n";
+            if(curval == F * G2.A){
                 ok = 1;
                 for(int j = 0; j < G2.m; j ++){
                     if(G2.prop.ktruss[j] || T1[j]){
@@ -85,9 +87,9 @@ std::tuple<VPII, VI, int> solve(Graph& G, int q, int F, int b){
 }
 
 int main(){
-    Graph G = read_graph("../rand.txt");
+    Graph G = read_graph("../dblp_A4.txt");
 
-    std::vector<std::tuple<int, int, int>> query = read_query("../rand_qry.txt");
+    std::vector<std::tuple<int, int, int>> query = read_query("../dblp_qry.txt");
 
     for(int i = 0; i < query.size(); i ++){
         auto [q, F, b] = query[i];
@@ -101,13 +103,22 @@ int main(){
         std::string str = std::to_string(i) + ".out";
         std::ofstream outfile(str);
 
-        outfile << res.size() << " " << S.size() << " " << k << "\n";
+        std::set<int> set;
+        for(auto [u, v] : res){
+            set.insert(u);
+            set.insert(v);
+        }
+
+        outfile << res.size() << " " << set.size() << " " << S.size() << " " << k << "\n";
         for(auto u : S){
             outfile << u << " ";
         }
         outfile << "\n";
         for(auto [u, v] : res){
             outfile << u << " " << v << "\n";
+        }
+        for(auto v : set){
+            outfile << v << " ";
         }
         outfile.close();
     }
