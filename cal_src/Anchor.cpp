@@ -367,6 +367,12 @@ std::pair<VI, int> compute_anchor(const Graph& G, int q, int F){
 
         //获得followers
         VI followers = compute_follower(G, L, q, F, layerpoint[i]);
+        if(followers.size() <= 1){
+#ifdef debug
+        std::cerr << " followers " << followers.size() << "\n";
+#endif
+            continue;
+        }
         //计算val
         int valres = 0, qdres = qdktruss; //初始化为ktruss的qd值
         VI attrval(G.A + 1);
