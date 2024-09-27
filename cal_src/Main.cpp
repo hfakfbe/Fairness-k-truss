@@ -51,6 +51,7 @@ std::tuple<VPII, VI, int> solve(Graph& G, int q, int F, int b){
             auto [T1, a] = compute_anchor(G2, q, F);
 
             if(T1.empty()){
+                std::cerr << "T1 empty\n";
                 break;
             }
 
@@ -64,11 +65,11 @@ std::tuple<VPII, VI, int> solve(Graph& G, int q, int F, int b){
             if(compute_value(G2, T1, F) == F * G2.A){
                 ok = 1;
                 for(int j = 0; j < G2.m; j ++){
-                    if(G2.prop.ktruss[j]){
+                    if(G2.prop.ktruss[j] || T1[j]){
                         res.push_back(G2.edg[j]);
                     }
                 }
-                G.prop.S = S;
+                G2.prop.S = S;
                 break;
             }
 

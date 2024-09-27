@@ -395,6 +395,9 @@ std::pair<VI, int> compute_anchor(const Graph& G, int q, int F){
 
     //需要计算newktruss
     VI followers = compute_follower(G, L, q, F, argmaxval);
+#ifdef debug
+    std::cerr << "\n";
+#endif
     VI mark(n + 1);
     for(int i = 0; i < m; i ++){
         if(G.prop.ktruss[i]){
