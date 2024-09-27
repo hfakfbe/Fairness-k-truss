@@ -246,10 +246,6 @@ VI compute_follower(const Graph& G, const Layer& L, int q, int F, int anchor){
         }
     };
 
-#ifdef debug
-    std::cerr << " dfs " << tot;
-#endif
-
     int isaccess = 0;
     for(auto eid : G.adj[anchor]){
         result.clear();
@@ -259,6 +255,11 @@ VI compute_follower(const Graph& G, const Layer& L, int q, int F, int anchor){
             followset.insert(result.begin(), result.end());
         }
     }
+
+#ifdef debug
+    std::cerr << " dfs " << tot;
+#endif
+
     if(!isaccess){
         followset.clear();
     }
