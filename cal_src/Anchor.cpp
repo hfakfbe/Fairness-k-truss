@@ -348,9 +348,15 @@ std::pair<VI, int> compute_anchor(const Graph& G, int q, int F){
     compute_anchor_init(G);
 
     for(int i = 0; i < len; i ++){
+#ifdef COMPACTNESS
+        if(L.UB[layerpoint[i]] == 0){
+            break;
+        }
+#else
         if(L.UB[layerpoint[i]] < maxval || L.UB[layerpoint[i]] == 0){
             break;
         }
+#endif
         // if(L.UB[layerpoint[i]] == maxval && query_dist == qdktruss){
         //     break;
         // }
@@ -375,6 +381,16 @@ std::pair<VI, int> compute_anchor(const Graph& G, int q, int F){
             qdres = std::max(qdres, vertex_distance[v]);
         }
         //比较
+#ifdef COMPACTNESS
+        if(query_dist > qdres){
+            maxval = valres;
+            query_dist = qdres;
+            argmaxval = layerpoint[i];
+        }else if(query_dist == qdres && valres > maxval){
+            maxval = valres;
+            argmaxval = layerpoint[i];
+        }
+#else
         if(valres > maxval){
             maxval = valres;
             query_dist = qdres;
@@ -383,6 +399,7 @@ std::pair<VI, int> compute_anchor(const Graph& G, int q, int F){
             query_dist = qdres;
             argmaxval = layerpoint[i];
         }
+#endif
 
 #ifdef debug
         std::cerr << " val " << valres << " qd " << qdres 
