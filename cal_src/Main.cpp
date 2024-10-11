@@ -87,9 +87,9 @@ std::tuple<VPII, VI, int> solve(Graph& G, int q, int F, int b){
 }
 
 int main(){
-    Graph G = read_graph("../facebook_A4.txt");
+    Graph G = read_graph("../data/orkut_A4.txt");
 
-    std::vector<std::tuple<int, int, int>> query = read_query("../facebook_qry.txt");
+    std::vector<std::tuple<int, int, int>> query = read_query("../data/rand_qry.txt");
 
     for(int i = 0; i < query.size(); i ++){
         auto [q, F, b] = query[i];
