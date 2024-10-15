@@ -1,8 +1,8 @@
 #include "Truss.h"
 
 int main(){
-    Graph G = read_graph("../facebook_A4.txt");
-    std::ofstream fout("../facebook_qry.txt");
+    Graph G = read_graph("../data/orkut_A4.txt");
+    std::ofstream fout("../data/orkut_qry.txt");
     int F = 10, b = 10;
 
     G.prop.trussness = decomposition(G);

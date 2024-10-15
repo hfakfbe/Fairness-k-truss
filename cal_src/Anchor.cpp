@@ -4,7 +4,7 @@
 #define DISCARDED 2
 
 VI extcom, access, vis;
-std::vector<std::unordered_set<int>> extcompointset;
+std::vector<std::unordered_set<int>> extcomedgeset;
 VI status, s_plus, edge_anchored, inqueue;
 
 struct GetEdgeId{
@@ -32,14 +32,13 @@ struct GetEdgeId{
 
 void compute_anchor_init(const Graph& G){
     extcom.resize(G.n + 1), access.resize(G.m), vis.resize(G.m);
-    extcompointset.resize(G.m);
+    extcomedgeset.resize(G.m);
     status.resize(G.m), s_plus.resize(G.m), edge_anchored.resize(G.m), inqueue.resize(G.m);
 
     for(int i = 0; i < G.m; i ++){
         if(G.prop.ktrussnoq[i]){
             extcom[G.edg[i].first] = extcom[G.edg[i].second] = G.prop.ktrussnoq[i];
-            extcompointset[G.prop.ktrussnoq[i]].insert(G.edg[i].first);
-            extcompointset[G.prop.ktrussnoq[i]].insert(G.edg[i].second);
+            extcomedgeset[G.prop.ktrussnoq[i]].insert(i);
         }else if(G.prop.ktruss[i]){
             extcom[G.edg[i].first] = extcom[G.edg[i].second] = -1;
         }
@@ -206,22 +205,23 @@ VI compute_follower(const Graph& G, const Layer& L, int q, int F, int anchor){
 
     std::function<void(int)> dfs = [&](int eid){
         tot ++;
-        opera.push_back(eid);
         vis[eid] = 1;
+        opera.push_back(eid);
+        if(!G.prop.ktruss[eid]){
+            result.insert(eid);
+        }
         if(extcom[G.edg[eid].first] == -1){
             access[eid] = 1;
         }else{
-            result.insert(extcompointset[extcom[G.edg[eid].first]].begin(), extcompointset[extcom[G.edg[eid].first]].end());
+            int ecom = extcom[G.edg[eid].first];
+            result.insert(extcomedgeset[ecom].begin(), extcomedgeset[ecom].end());
         }
         if(extcom[G.edg[eid].second] == -1){
             access[eid] = 1;
         }else{
-            result.insert(extcompointset[extcom[G.edg[eid].second]].begin(), extcompointset[extcom[G.edg[eid].second]].end());
+            int ecom = extcom[G.edg[eid].second];
+            result.insert(extcomedgeset[ecom].begin(), extcomedgeset[ecom].end());
         }
-        if(extcom[e[eid].first] >= 0)
-            result.insert(e[eid].first);
-        if(extcom[e[eid].second] >= 0)
-            result.insert(e[eid].second);
 
         auto [u, v] = e[eid];
         for(auto euw : G.adj[u]){
@@ -248,12 +248,13 @@ VI compute_follower(const Graph& G, const Layer& L, int q, int F, int anchor){
 
     int isaccess = 0;
     for(auto eid : G.adj[anchor]){
-        result.clear();
         if(layernum_of_edge[eid] != -1 && !vis[eid] && status[eid] == SURVIVED){
             dfs(eid);
             isaccess |= access[eid];
-            followset.insert(result.begin(), result.end());
         }
+    }
+    for(auto eid : result){
+        followers.push_back(eid);
     }
 
 #ifdef debug
@@ -261,11 +262,7 @@ VI compute_follower(const Graph& G, const Layer& L, int q, int F, int anchor){
 #endif
 
     if(!isaccess){
-        followset.clear();
-    }
-
-    for(auto vertex : followset){
-        followers.push_back(vertex); //包含anchor
+        followers.clear();
     }
 
     for(auto eid : opera){
@@ -317,34 +314,8 @@ std::pair<VI, int> compute_anchor(const Graph& G, int q, int F){
     int len = std::unique(layerpoint.begin(), layerpoint.end()) - layerpoint.begin();
     
     std::cerr << len << " candidate anchors\n";
-    //预处理query_dist以及ktruss中最大的vertex_distance
-    std::queue<int> Q;
-    VI vis(n + 1);
-    Q.push(q);
-    vis[q] = 1;
-    vertex_distance[q] = 0;
-    while(!Q.empty()){
-        int u = Q.front();
-        Q.pop();
-        for(auto eid : G.adj[u]){
-            int v = e[eid].first ^ e[eid].second ^ u;
-            if(!vis[v]){
-                Q.push(v);
-                vis[v] = 1;
-                vertex_distance[v] = vertex_distance[u] + 1;
-            }
-        }
-    }
-    int qdktruss = 0;
-    for(int i = 0; i < m; i ++){
-        if(G.prop.ktruss[i]){
-            qdktruss = std::max({qdktruss, vertex_distance[e[i].first],
-                vertex_distance[e[i].second]});
-        }
-    }
 
     //开始逐个计算
-
     compute_anchor_init(G);
 
     for(int i = 0; i < len; i ++){
@@ -357,24 +328,30 @@ std::pair<VI, int> compute_anchor(const Graph& G, int q, int F){
             break;
         }
 #endif
-        // if(L.UB[layerpoint[i]] == maxval && query_dist == qdktruss){
-        //     break;
-        // }
 #ifdef debug
         std::cerr << "candidate " << i << " : " << layerpoint[i] << 
             " UB " << L.UB[layerpoint[i]];
 #endif
 
         //获得followers
-        VI followers = compute_follower(G, L, q, F, layerpoint[i]);
-        if(followers.size() <= 1){
+        VI efollowers = compute_follower(G, L, q, F, layerpoint[i]);
+        std::set<int> followers;
+        for(auto eid : efollowers){
+            auto [u, v] = G.edg[eid];
+            for(auto uv : {u, v}){
+                if(extcom[uv] >= 0){
+                    followers.insert(uv);
+                }
+            }
+        }
+        if(followers.size() <= 0){
 #ifdef debug
         std::cerr << " followers " << followers.size() << "\n";
 #endif
             continue;
         }
         //计算val
-        int valres = 0, qdres = qdktruss; //初始化为ktruss的qd值
+        int valres = 0, qdres = 0; //初始化为ktruss的qd值
         VI attrval(G.A + 1);
         for(auto v : followers){
             attrval[G.attr[v]] ++;
@@ -382,9 +359,26 @@ std::pair<VI, int> compute_anchor(const Graph& G, int q, int F){
         for(int j = 0; j < G.A; j ++){
             valres += std::min(attrval[j], F - origin_attribute[j]);
         }
-        //计算query_dist最大值
-        for(auto v : followers){
-            qdres = std::max(qdres, vertex_distance[v]);
+        //计算query_dist
+        std::queue<std::pair<int, int>> Q;
+        std::set<int> vis, fol;
+        for(auto eid : efollowers){
+            fol.insert(eid);
+        }
+        Q.push({q, 0});
+        vis.insert(q);
+        while(!Q.empty()){
+            auto [u, w] = Q.front();
+            Q.pop();
+            qdres = std::max(qdres, w);
+            for(auto eid : G.adj[u]){
+                int v = G.edg[eid].first ^ G.edg[eid].second ^ u;
+                if(vis.count(v) || !G.prop.ktruss[eid] && !fol.count(eid)){
+                    continue;
+                }
+                vis.insert(v);
+                Q.push({v, w + 1});
+            }
         }
         //比较
 #ifdef COMPACTNESS
@@ -418,29 +412,21 @@ std::pair<VI, int> compute_anchor(const Graph& G, int q, int F){
     }
 
     //需要计算newktruss
-    VI followers = compute_follower(G, L, q, F, argmaxval);
+    VI efollowers = compute_follower(G, L, q, F, argmaxval);
 #ifdef debug
     std::cerr << "\n";
 #endif
     VI mark(n + 1);
     for(int i = 0; i < m; i ++){
         if(G.prop.ktruss[i]){
+            newktruss[i] = 1;
             mark[e[i].first] = mark[e[i].second] = 1;
         }
     }
-    for(auto fo : followers){
-        mark[fo] = 1;
-    }
-    for(int i = 0; i < m; i ++){
-        if(mark[e[i].first] && mark[e[i].second]){
-            newktruss[i] = 1;
-        }
-    }
-    std::fill(origin_attribute.begin(), origin_attribute.end(), 0);
-    for(int i = 1; i <= n; i ++){
-        if(mark[i]){
-            origin_attribute[G.attr[i]] ++;
-        }
+    for(auto fo : efollowers){
+        newktruss[fo] = 1;
+        auto [u, v] = G.edg[fo];
+        mark[u] = mark[v] = 1;
     }
     return {newktruss, argmaxval};
 }

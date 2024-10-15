@@ -1,7 +1,7 @@
 # 定义编译器
 CXX = g++
-CXXFLAGS = -std=c++20 -O3
-# CXXFLAGS = -std=c++20 -Ddebug -ggdb
+# CXXFLAGS = -std=c++20 -O3
+CXXFLAGS = -std=c++20 -Ddebug -ggdb
 
 # 定义源文件和目标文件
 SOURCES = Decomposition.cpp Layer.cpp Maxk.cpp Property.cpp Read.cpp
@@ -14,13 +14,13 @@ ANCHOR_C_OBJECT = Anchor_c.o
 MAIN_SOURCE = Main.cpp
 MAIN_OBJECT = Main.o
 
-TEST_SOURCE = Test_checkcom.cpp
-TEST_OBJECT = Test_checkcom.o
+TEST_SOURCE = Test_randqry.cpp
+TEST_OBJECT = Test_randqry.o
 
 # 定义目标程序
-FAIR_TARGET = Fair
-COMPACT_TARGET = Compact
-TEST_TARGET = Test
+FAIR_TARGET = ../bin/Fair
+COMPACT_TARGET = ../bin/Compact
+TEST_TARGET = ../bin/Test
 ALL_TARGETS = $(FAIR_TARGET) $(COMPACT_TARGET) $(TEST_TARGET)
 
 # 指令

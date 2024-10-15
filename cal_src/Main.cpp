@@ -86,10 +86,15 @@ std::tuple<VPII, VI, int> solve(Graph& G, int q, int F, int b){
     return {VPII(), VI(), 2};
 }
 
-int main(){
-    Graph G = read_graph("../data/orkut_A4.txt");
+int main(int argc, char *argv[]){
+    if(argc != 3){
+        std::cerr << "main: 2 arguments!\n";
+        exit(1);
+    }
 
-    std::vector<std::tuple<int, int, int>> query = read_query("../data/rand_qry.txt");
+    Graph G = read_graph(argv[1]);
+
+    std::vector<std::tuple<int, int, int>> query = read_query(argv[2]);
 
     for(int i = 0; i < query.size(); i ++){
         auto [q, F, b] = query[i];
@@ -99,16 +104,16 @@ int main(){
         end = clock();
         
         std::cerr << end - beg << "us\n";
+        std::cerr << "-------------------------------------------------------\n";
 
         std::string str = "../out/" + std::to_string(i) + ".out";
         std::ofstream outfile(str);
-
         std::set<int> set;
+
         for(auto [u, v] : res){
             set.insert(u);
             set.insert(v);
         }
-
         outfile << res.size() << " " << set.size() << " " << S.size() << " " << k << "\n";
         for(auto u : S){
             outfile << u << " ";
@@ -119,6 +124,9 @@ int main(){
         }
         for(auto v : set){
             outfile << v << " ";
+        }
+        if(k == 2){
+            outfile << "\nNot Exist!";
         }
         outfile.close();
     }
