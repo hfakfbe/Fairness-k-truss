@@ -14,8 +14,8 @@ ANCHOR_C_OBJECT = Anchor_c.o
 MAIN_SOURCE = Main.cpp
 MAIN_OBJECT = Main.o
 
-TEST_SOURCE = Test_randqry.cpp
-TEST_OBJECT = Test_randqry.o
+TEST_SOURCE = Test_checkcom.cpp
+TEST_OBJECT = Test_checkcom.o
 
 # 定义目标程序
 FAIR_TARGET = ../bin/Fair

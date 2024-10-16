@@ -27,7 +27,7 @@ Layer compute_layer(const Graph& G, int q, int F){
     for(int i = 1; i <= n; i ++){
         int u = viddo[i];
         for(auto eid : G.adj[u]){ 
-            if(!G.prop.ksubtruss[eid] && !G.prop.ktruss[eid] && !G.prop.ktrussnoq[eid]){
+            if(!G.prop.ksubtruss[eid]){
                 continue;
             }
             int v = G.edg[eid].first ^ G.edg[eid].second ^ u;
@@ -37,11 +37,11 @@ Layer compute_layer(const Graph& G, int q, int F){
             for(auto w : A[u]){
                 if(A[v].count(w)){
                     int evw = hash_table[1ll * v * n + w];
-                    if(!G.prop.ksubtruss[evw] && !G.prop.ktruss[evw] && !G.prop.ktrussnoq[evw]){
+                    if(!G.prop.ksubtruss[evw]){
                         continue;
                     }
                     int euw = hash_table[1ll * u * n + w];
-                    if(!G.prop.ksubtruss[euw] && !G.prop.ktruss[euw] && !G.prop.ktrussnoq[euw]){
+                    if(!G.prop.ksubtruss[euw]){
                         continue;
                     }
                     sup[eid] ++;
@@ -56,7 +56,7 @@ Layer compute_layer(const Graph& G, int q, int F){
 
     VI P, removed_edges(m);
     for(int i = 0; i < m; i ++){
-        if(G.prop.ksubtruss[i] && sup[i] < k - 2){ //anchored的边不能进队
+        if(G.prop.ksubtruss[i] && !G.prop.ktruss[i] && sup[i] < k - 2){ //anchored的边不能进队
             // removed_edges[i] = true;
             P.push_back(i);
         }
@@ -90,7 +90,7 @@ Layer compute_layer(const Graph& G, int q, int F){
             for(int i = e_link.p[u]; ~i; i = e_link.e[i].next) {
                 // 我们要保证三角形是存在的
                 int euw = e_link.e[i].index_in_e;
-                if((!G.prop.ksubtruss[euw] && !G.prop.ktruss[euw] && !G.prop.ktrussnoq[euw]) || removed_edges[euw]){ 
+                if(!G.prop.ksubtruss[euw] || removed_edges[euw]){ 
                     continue;
                 } 
                 int w = e_link.e[i].v;
@@ -98,7 +98,7 @@ Layer compute_layer(const Graph& G, int q, int F){
                     continue;
                 }
                 int evw = hash_table[1ll * v * n + w];
-                if((!G.prop.ksubtruss[evw] && !G.prop.ktruss[evw] && !G.prop.ktrussnoq[evw]) || removed_edges[evw]){
+                if(!G.prop.ksubtruss[evw] || removed_edges[evw]){
                     continue;
                 }
                 // 去除这条边影响
@@ -224,14 +224,14 @@ VI compute_UB(const Graph& G, const Layer& L, int q, int F){
         }
     }
     // for(int i = 0; i < G.m; i ++){
-    //     std::cout << layer_deg[i] << " \n"[i == G.m - 1];
+    //     std::cerr << layer_deg[i] << " \n"[i == G.m - 1];
     // }
     std::queue<int> Q;
     for(int i = 0; i < m; i ++){
         if(G.prop.ktruss[i]){
             Q.push(i);
             access[i] = 1;
-        }else if(G.prop.ksubtruss[i] && layer_deg[i] == 0){
+        }else if(G.prop.ksubtruss[i] && !G.prop.ktrussnoq[i] && layer_deg[i] == 0){
             Q.push(i);
             access[i] = 0;
         }
@@ -284,15 +284,15 @@ VI compute_UB(const Graph& G, const Layer& L, int q, int F){
     
     for(int i = 0; i < G.m; i ++){
         if(layer_deg[i] != 0){
-            std::cout << "Graph:\n";
+            std::cerr << "Graph:\n";
             for(auto [u, v] : G.edg){
-                std::cout << u << " " << v << "\n";
+                std::cerr << u << " " << v << "\n";
             }
-            std::cout << "q and F:\n";
-            std::cout << q << " " << F << "\n";
-            std::cout << "layer_deg:\n";
+            std::cerr << "q and F:\n";
+            std::cerr << q << " " << F << "\n";
+            std::cerr << "layer_deg:\n";
             for(int i = 0; i < G.m; i ++){
-                std::cout << layer_deg[i] << " \n"[i == G.m - 1];
+                std::cerr << layer_deg[i] << " \n"[i == G.m - 1];
             }
             assert(0);
         }
@@ -327,7 +327,7 @@ VI compute_UB(const Graph& G, const Layer& L, int q, int F){
         }
     }
         // for(int i = 1; i <= n; i ++){
-        //     std::cout << UB[i] << " \n"[i == n];
+        //     std::cerr << UB[i] << " \n"[i == n];
         // }
     return UB;
 }

@@ -1,8 +1,13 @@
 #include "Truss.h"
 
-int main(){
-    Graph G = read_graph("../data/orkut_A4.txt");
-    std::ofstream fout("../data/orkut_qry.txt");
+int main(int argc, char *argv[]){
+    if(argc != 3){
+        std::cerr << "main: 2 arguments!\n";
+        exit(1);
+    }
+
+    Graph G = read_graph(argv[1]);
+    std::ofstream fout(argv[2]);
     int F = 10, b = 10;
 
     G.prop.trussness = decomposition(G);

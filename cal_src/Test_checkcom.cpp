@@ -66,18 +66,23 @@ checkstr check_community(std::ifstream &fin, int q, int F){
     return res;
 }
 
-int main(){
+int main(int argc, char *argv[]){
+    if(argc != 3){
+        std::cerr << "main: 2 argument!\n";
+        exit(1);
+    }
     // 是否有解，是否爆了，直径多少
-    std::vector<std::tuple<int, int, int>> query = read_query("../facebook_qry.txt");
-    std::ofstream fout("../out/summary.out");
+    std::vector<std::tuple<int, int, int>> query = read_query(argv[1]);
+    std::string sf = argv[2];
+    std::ofstream fout((sf + "/summary.out").c_str());
     for(int i = 0; i < query.size(); i ++){
         auto [q, F, b] = query[i];
 
-        std::string str = "../out/" + std::to_string(i) + ".out";
+        std::string str = sf + "/" + std::to_string(i) + ".out";
         std::ifstream fin(str);
         auto cks = check_community(fin, q, F);
         if(cks.d != -1){
-            fout << q << " " << F << " " << b << " d: " << cks.d << " n: " << cks.n << " m: " << cks.m << " S: " << cks.k << " k: " << cks.k << "\n";
+            fout << q << " " << F << " " << b << " d: " << cks.d << " n: " << cks.n << " m: " << cks.m << " S: " << cks.S << " k: " << cks.k << "\n";
         }
     }
 }

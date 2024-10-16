@@ -99,12 +99,13 @@ int main(int argc, char *argv[]){
     for(int i = 0; i < query.size(); i ++){
         auto [q, F, b] = query[i];
 
+        std::cerr << "--------------------------------------------------------------------------\n";
+        std::cerr << "q: " << q << " F: " << F << " b: " << b << "\n";
         clock_t beg = clock(), end;
         auto [res, S, k] = solve(G, q, F, b);
         end = clock();
         
         std::cerr << end - beg << "us\n";
-        std::cerr << "-------------------------------------------------------\n";
 
         std::string str = "../out/" + std::to_string(i) + ".out";
         std::ofstream outfile(str);

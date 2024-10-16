@@ -13,7 +13,7 @@ void solve(Graph& G, int q, int F, int b){
 }
 
 #include <bits/stdc++.h>
-std::mt19937 rng(time(0));
+std::mt19937 rng(std::chrono::system_clock().now().time_since_epoch().count());
 
 Graph rand_graph(){
     Graph G;

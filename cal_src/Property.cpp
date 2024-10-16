@@ -62,10 +62,16 @@ Property compute_property(const Graph& G, int q, int F){
     // ksubtruss
     res.ksubtruss.resize(G.m);
     std::fill(res.ksubtruss.begin(), res.ksubtruss.end(), 0);
-    for(auto eid : G.adj[q]){
-        if(res.trussness[eid] >= res.k - 1 ){
-            res.ksubtruss[eid] = 1;
-            Q.push(eid);
+    // for(auto eid : G.adj[q]){
+    //     if(res.trussness[eid] >= res.k - 1 ){
+    //         Q.push(eid);
+    //         res.ksubtruss[eid] = 1;
+    //     }
+    // }
+    for(int i = 0; i < G.m; i ++){
+        if(res.trussness[i] >= res.k - 1){
+            Q.push(i);
+            res.ksubtruss[i] = 1;
         }
     }
     while(!Q.empty()){
@@ -80,11 +86,11 @@ Property compute_property(const Graph& G, int q, int F){
             }
         }
     }
-    for(int i = 0; i < G.m; i ++){
-        if(res.ktrussnoq[i] || res.ktruss[i]){
-            res.ksubtruss[i] = 0;
-        }
-    }
+    // for(int i = 0; i < G.m; i ++){
+    //     if(res.ktrussnoq[i] || res.ktruss[i]){
+    //         res.ksubtruss[i] = 0;
+    //     }
+    // }
 
     return res;
 }
@@ -108,17 +114,23 @@ Property update_property(const Graph& G, VI& T, int q, int F){
     res.ksubtruss.resize(G.m);
     std::queue<int> Q;
     std::fill(res.ksubtruss.begin(), res.ksubtruss.end(), 0);
+    // for(int i = 0; i < G.m; i ++){
+    //     if(res.ktruss[i]){
+    //         auto [u, v] = G.edg[i];
+    //         for(auto uv : {u, v}){
+    //             for(auto eid : G.adj[uv]){
+    //                 if(res.trussness[eid] >= res.k - 1 && !res.ksubtruss[eid]){
+    //                     res.ksubtruss[eid] = 1;
+    //                     Q.push(eid);
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
     for(int i = 0; i < G.m; i ++){
-        if(res.ktruss[i]){
-            auto [u, v] = G.edg[i];
-            for(auto uv : {u, v}){
-                for(auto eid : G.adj[uv]){
-                    if(res.trussness[eid] >= res.k - 1 && !res.ksubtruss[eid]){
-                        res.ksubtruss[eid] = 1;
-                        Q.push(eid);
-                    }
-                }
-            }
+        if(res.trussness[i] >= res.k - 1){
+            Q.push(i);
+            res.ksubtruss[i] = 1;
         }
     }
     while(!Q.empty()){
@@ -133,11 +145,11 @@ Property update_property(const Graph& G, VI& T, int q, int F){
             }
         }
     }
-    for(int i = 0; i < G.m; i ++){
-        if(res.ktrussnoq[i] || res.ktruss[i]){
-            res.ksubtruss[i] = 0;
-        }
-    }
+    // for(int i = 0; i < G.m; i ++){
+    //     if(res.ktrussnoq[i] || res.ktruss[i]){
+    //         res.ksubtruss[i] = 0;
+    //     }
+    // }
 
     return res;
 }
