@@ -34,8 +34,12 @@ void compute_anchor_init(const Graph& G){
     extcom.resize(G.n + 1), access.resize(G.m), vis.resize(G.m);
     extcomedgeset.resize(G.m);
     status.resize(G.m), s_plus.resize(G.m), edge_anchored.resize(G.m), inqueue.resize(G.m);
+    for(int i = 0; i < G.m; i ++){
+        extcomedgeset[i].clear();
+    }
 
     for(int i = 0; i < G.m; i ++){
+        // assert(G.prop.ktrussnoq[i] < G.m && G.prop.ktrussnoq[i] >= 0);
         if(G.prop.ktrussnoq[i]){
             extcom[G.edg[i].first] = extcom[G.edg[i].second] = G.prop.ktrussnoq[i];
             extcomedgeset[G.prop.ktrussnoq[i]].insert(i);
@@ -204,6 +208,7 @@ VI compute_follower(const Graph& G, const Layer& L, int q, int F, int anchor){
     tot = 0;
 
     std::function<void(int)> dfs = [&](int eid){
+        // assert(eid >= 0 && eid < G.m);
         tot ++;
         vis[eid] = 1;
         opera.push_back(eid);
@@ -214,13 +219,21 @@ VI compute_follower(const Graph& G, const Layer& L, int q, int F, int anchor){
             access[eid] = 1;
         }else{
             int ecom = extcom[G.edg[eid].first];
+            // assert(ecom >= 0 && ecom < G.m);
             result.insert(extcomedgeset[ecom].begin(), extcomedgeset[ecom].end());
+            // for(auto ee : extcomedgeset[ecom]){
+            //     assert(ee < G.m && ee >= 0);
+            // }
         }
         if(extcom[G.edg[eid].second] == -1){
             access[eid] = 1;
         }else{
             int ecom = extcom[G.edg[eid].second];
+            // assert(ecom >= 0 && ecom < G.m);
             result.insert(extcomedgeset[ecom].begin(), extcomedgeset[ecom].end());
+            // for(auto ee : extcomedgeset[ecom]){
+            //     assert(ee < G.m && ee >= 0);
+            // }
         }
 
         auto [u, v] = e[eid];
@@ -254,6 +267,10 @@ VI compute_follower(const Graph& G, const Layer& L, int q, int F, int anchor){
         }
     }
     for(auto eid : result){
+        // if(eid < 0 || eid > G.m){
+        //     std::cout << eid << "!\n";
+        //     assert(0);
+        // }   
         followers.push_back(eid);
     }
 
@@ -337,6 +354,9 @@ std::pair<VI, int> compute_anchor(const Graph& G, int q, int F){
         VI efollowers = compute_follower(G, L, q, F, layerpoint[i]);
         std::set<int> followers;
         for(auto eid : efollowers){
+            // if(eid >= G.m){
+            //     assert(0);
+            // }
             auto [u, v] = G.edg[eid];
             for(auto uv : {u, v}){
                 if(extcom[uv] >= 0){

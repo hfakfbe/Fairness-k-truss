@@ -1,10 +1,43 @@
 #include "Truss.h"
+#include <mutex>
+#include <thread>
 
-constexpr int MAXN = 100;
+constexpr int MAXN = INT_MAX;
 
 struct checkstr{
     int n, m, S, k, d;
 };
+
+std::mutex mtx;  // 互斥锁用于保护全局直径的更新
+int global_max_d = 0;  // 全局最大直径
+
+void bfs_diameter_range(int start_idx, int end_idx, const VI& vertices, const std::unordered_map<int, VI>& adj, const std::unordered_map<int, int>& p) {
+    for(int i = start_idx; i < end_idx; ++i) {
+        std::queue<int> Q;
+        VI dis(vertices.size(), -1);
+        Q.push(vertices[i]);
+        dis[i] = 0;
+
+        while(!Q.empty()){
+            int u = Q.front();
+            Q.pop();
+            int pu = p.at(u);
+            for(auto v : adj.at(u)){
+                int pv = p.at(v);
+                if(dis[pv] == -1){
+                    dis[pv] = dis[pu] + 1;
+                    Q.push(v);
+                }
+            }
+        }
+
+        int local_max_d = *std::max_element(dis.begin(), dis.end());
+
+        // 使用互斥锁保护更新全局直径的部分
+        std::lock_guard<std::mutex> lock(mtx);
+        global_max_d = std::max(global_max_d, local_max_d);
+    }
+}
 
 checkstr check_community(std::ifstream &fin, int q, int F){
     // m n S k
@@ -12,8 +45,8 @@ checkstr check_community(std::ifstream &fin, int q, int F){
     // m lines
     // n vertices in a line
     int n, m, S, k;
-    std::map<int, VI> adj;
-    std::map<int, int> p;
+    std::unordered_map<int, VI> adj;
+    std::unordered_map<int, int> p;
     fin >> m >> n >> S >> k;
     VI anchors(S), vertices(n);
 
@@ -37,28 +70,31 @@ checkstr check_community(std::ifstream &fin, int q, int F){
         res.d = -1;
         return res;
     }
-    int d = 0;
-    for(int i = 0; i < n; i ++){
-        std::queue<int> Q;
-        VI dis(n, -1);
-        Q.push(vertices[i]);
-        dis[i] = 0;
-        while(!Q.empty()){
-            int u = Q.front();
-            Q.pop();
-            int pu = p[u];
-            for(auto v : adj[u]){
-                int pv = p[v];
-                if(dis[pv] == -1){
-                    dis[pv] = dis[pu] + 1;
-                    Q.push(v);
-                }
-            }
-        }
-        d = std::max(d, *std::max_element(dis.begin(), dis.end()));
+
+    // 多线程计算直径
+    global_max_d = 0;
+
+    // 确定合适的线程数，通常是系统硬件线程数
+    int num_threads = std::min<int>(std::thread::hardware_concurrency(), n);
+    int vertices_per_thread = n / num_threads;  // 每个线程处理的顶点数
+    int remaining_vertices = n % num_threads;   // 处理不均分的顶点
+
+    std::vector<std::thread> threads;
+
+    int start_idx = 0;
+    for(int t = 0; t < num_threads; ++t) {
+        int end_idx = start_idx + vertices_per_thread + (t < remaining_vertices ? 1 : 0);  // 分配额外的顶点给前 remaining_vertices 个线程
+        threads.emplace_back(bfs_diameter_range, start_idx, end_idx, std::cref(vertices), std::cref(adj), std::cref(p));
+        start_idx = end_idx;
     }
+
+    // 等待所有线程完成
+    for(auto &t : threads){
+        t.join();
+    }
+
     checkstr res;
-    res.d = d;
+    res.d = global_max_d;
     res.n = n;
     res.m = m;
     res.S = S;
@@ -83,6 +119,8 @@ int main(int argc, char *argv[]){
         auto cks = check_community(fin, q, F);
         if(cks.d != -1){
             fout << q << " " << F << " " << b << " d: " << cks.d << " n: " << cks.n << " m: " << cks.m << " S: " << cks.S << " k: " << cks.k << "\n";
+        }else{
+            fout << q << " " << F << " " << b << "-1\n";
         }
     }
 }
