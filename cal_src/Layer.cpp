@@ -131,10 +131,10 @@ Layer compute_layer(const Graph& G, int q, int F){
                 continue;
             }
             int w = G.edg[euw].first ^ G.edg[euw].second ^ u;
-            if(w == v || !hash_table.count(1ll * v * n + w)){
+            if(w == v || !hash_table.count(1LL * v * n + w)){
                 continue;
             }
-            int evw = hash_table[1ll * v * n + w];
+            int evw = hash_table[1LL * v * n + w];
             if(G.prop.ktruss[evw] || G.prop.ktrussnoq[evw] || L.layernum[evw] != -1){
                 continue;
             }

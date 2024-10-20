@@ -177,13 +177,13 @@ VI compute_follower(const Graph& G, const Layer& L, int q, int F, int anchor){
             status[eid] = SURVIVED;
 
             for(auto euw : G.adj[u]){
-                if(L.layernum[euw] <= L.layernum[eid] && !ktruss[euw] && !edge_anchored[euw]){
+                if(L.layernum[euw] <= L.layernum[eid] && !ktruss[euw] && !ktrussnoq[euw] && !edge_anchored[euw]){
                     continue;
                 }
                 int w = e[euw].first ^ e[euw].second ^ u;
                 if(geteid.count(v, w)){
                     int evw = geteid.get(v, w);
-                    if(L.layernum[evw] <= L.layernum[eid] && !ktruss[evw] && !edge_anchored[evw]){
+                    if(L.layernum[evw] <= L.layernum[eid] && !ktruss[evw] && !ktrussnoq[evw] && !edge_anchored[evw]){
                         continue;
                     }
                     //这里考虑加in_queue
@@ -207,18 +207,23 @@ VI compute_follower(const Graph& G, const Layer& L, int q, int F, int anchor){
 #endif
     tot = 0;
 
+    int isaccess = 0;
+
     std::function<void(int)> dfs = [&](int eid){
         // assert(eid >= 0 && eid < G.m);
         tot ++;
         vis[eid] = 1;
         opera.push_back(eid);
+        auto [u, v] = G.edg[eid];
+
         if(!G.prop.ktruss[eid]){
             result.insert(eid);
         }
         if(extcom[G.edg[eid].first] == -1){
-            access[eid] = 1;
+            // access[eid] = 1;
+            isaccess = 1;
         }else{
-            int ecom = extcom[G.edg[eid].first];
+            int ecom = extcom[u];
             // assert(ecom >= 0 && ecom < G.m);
             result.insert(extcomedgeset[ecom].begin(), extcomedgeset[ecom].end());
             // for(auto ee : extcomedgeset[ecom]){
@@ -226,9 +231,10 @@ VI compute_follower(const Graph& G, const Layer& L, int q, int F, int anchor){
             // }
         }
         if(extcom[G.edg[eid].second] == -1){
-            access[eid] = 1;
+            // access[eid] = 1;
+            isaccess = 1;
         }else{
-            int ecom = extcom[G.edg[eid].second];
+            int ecom = extcom[v];
             // assert(ecom >= 0 && ecom < G.m);
             result.insert(extcomedgeset[ecom].begin(), extcomedgeset[ecom].end());
             // for(auto ee : extcomedgeset[ecom]){
@@ -236,34 +242,42 @@ VI compute_follower(const Graph& G, const Layer& L, int q, int F, int anchor){
             // }
         }
 
-        auto [u, v] = e[eid];
-        for(auto euw : G.adj[u]){
-            if(L.layernum[euw] < L.layernum[eid] && !ktruss[euw]){
-                continue;
-            }
-            int w = e[euw].first ^ e[euw].second ^ u;
-            if(geteid.count(v, w)){
-                int evw = geteid.get(v, w);
-                if(L.layernum[evw] < L.layernum[eid] && !ktruss[euw]){
-                    continue;
-                }
+        // for(auto euw : G.adj[u]){
+        //     if(L.layernum[euw] < L.layernum[eid] && !ktruss[euw]){
+        //         continue;
+        //     }
+        //     int w = e[euw].first ^ e[euw].second ^ u;
+        //     if(geteid.count(v, w)){
+        //         int evw = geteid.get(v, w);
+        //         if(L.layernum[evw] < L.layernum[eid] && !ktruss[euw]){
+        //             continue;
+        //         }
                 
-                if(!vis[euw] && status[euw] == SURVIVED){
-                    dfs(euw);
-                }
-                if(!vis[evw] && status[evw] == SURVIVED){
-                    dfs(evw);
-                }
-                access[eid] |= access[euw] | access[evw];
+        //         if(!vis[euw] && status[euw] == SURVIVED){
+        //             dfs(euw);
+        //         }
+        //         if(!vis[evw] && status[evw] == SURVIVED){
+        //             dfs(evw);
+        //         }
+        //         access[eid] |= access[euw] | access[evw];
+        //     }
+        // }
+        for(auto euw : G.adj[u]){
+            if(!vis[euw] && status[euw] == SURVIVED){
+                dfs(euw);
+            }
+        }
+        for(auto evw : G.adj[v]){
+            if(!vis[evw] && status[evw] == SURVIVED){
+                dfs(evw);
             }
         }
     };
 
-    int isaccess = 0;
     for(auto eid : G.adj[anchor]){
         if(layernum_of_edge[eid] != -1 && !vis[eid] && status[eid] == SURVIVED){
             dfs(eid);
-            isaccess |= access[eid];
+            // isaccess |= access[eid];
         }
     }
     for(auto eid : result){

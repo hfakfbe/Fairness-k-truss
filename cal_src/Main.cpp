@@ -10,10 +10,14 @@ std::tuple<VPII, VI, int> solve(Graph& G, int q, int F, int b){
     std::cerr << end - beg << "us\n";
     
     std::cerr << "compute_maxk\n";
-    auto [G2, kmax] = compute_maxk(G, q, F);
-    std::cerr << "G2 has " << G2.m << " edges\n";
-    // int kmax = 52;
-    // Graph G2 = G;
+    // auto [G2, kmax] = compute_maxk(G, q, F);
+    // std::cerr << "G2 has " << G2.m << " edges\n";
+    int tau_q = 0;
+    for(auto eid : G.adj[q]){
+        tau_q = std::max(tau_q, G.prop.trussness[eid]);
+    }
+    int kmax = tau_q;
+    Graph &G2 = G;
 
     if(kmax == 2){
         std::cerr << "not exist\n";
