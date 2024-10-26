@@ -91,8 +91,8 @@ std::tuple<VPII, VI, int> solve(Graph& G, int q, int F, int b){
 }
 
 int main(int argc, char *argv[]){
-    if(argc != 3){
-        std::cerr << "main: 2 arguments!\n";
+    if(argc != 4){
+        std::cerr << "main: 3 arguments!\n";
         exit(1);
     }
 
@@ -111,7 +111,8 @@ int main(int argc, char *argv[]){
         
         std::cerr << end - beg << "us\n";
 
-        std::string str = "../out/" + std::to_string(i) + ".out";
+        std::string str = argv[3];
+        str += "/" + std::to_string(i) + ".out";
         std::ofstream outfile(str);
         std::set<int> set;
 

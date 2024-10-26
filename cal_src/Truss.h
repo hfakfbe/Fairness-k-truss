@@ -50,6 +50,7 @@ using VVPII = std::vector<VPII>;
 struct Layer{
     VI UB; // edge
     VI layernum; // edge
+    VI sesup;
     VVI layer; // edge
 };
 
@@ -140,7 +141,7 @@ struct edge_link{
 };
 
 struct hash_map {
-    const int maxn, maxm, mod;
+    int maxn, maxm, mod;
     struct data {
         long long u;
         int v, next;
@@ -179,7 +180,7 @@ struct hash_map {
         }
     }
 
-    hash_map(int n, int m)
+    hash_map(int n = 0, int m = 0)
         : maxn(n + 1), maxm(m + 1), cnt(0), e(maxm * 8), h(maxm * 4), mod(maxm * 4) {}
 };
 
