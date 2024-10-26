@@ -131,8 +131,11 @@ int main(int argc, char *argv[]){
         for(auto v : set){
             outfile << v << " ";
         }
+        outfile << "\n";
         if(k == 2){
-            outfile << "\nNot Exist!";
+            outfile << "-1\nNot Exist!";
+        }else{
+            outfile << end - beg;
         }
         outfile.close();
     }

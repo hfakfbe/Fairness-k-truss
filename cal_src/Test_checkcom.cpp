@@ -6,6 +6,7 @@ constexpr int MAXN = INT_MAX;
 
 struct checkstr{
     int n, m, S, k, d;
+    clock_t t;
 };
 
 std::mutex mtx;  // 互斥锁用于保护全局直径的更新
@@ -99,6 +100,7 @@ checkstr check_community(std::ifstream &fin, int q, int F){
     res.m = m;
     res.S = S;
     res.k = k;
+    fin >> res.t; // time us
     return res;
 }
 
@@ -118,7 +120,7 @@ int main(int argc, char *argv[]){
         std::ifstream fin(str);
         auto cks = check_community(fin, q, F);
         if(cks.d != -1){
-            fout << q << " " << F << " " << b << " d: " << cks.d << " n: " << cks.n << " m: " << cks.m << " S: " << cks.S << " k: " << cks.k << "\n";
+            fout << q << " " << F << " " << b << " d: " << cks.d << " n: " << cks.n << " m: " << cks.m << " S: " << cks.S << " k: " << cks.k << " t: " << 1.0 * cks.t / (1e6) << "\n";
         }else{
             fout << q << " " << F << " " << b << "-1\n";
         }

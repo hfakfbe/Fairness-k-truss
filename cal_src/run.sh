@@ -1,6 +1,6 @@
 #!/bin/bash  
 
-datas=("facebook" "dblp" "eucore" "LiveJournal" "Orkut" "amazon")    
+datas=("facebook" "dblp" "eucore" "LiveJournal" "orkut" "amazon")    
 
 # 定义一个函数来处理单个数据集  
 process_data() {  
@@ -11,6 +11,8 @@ process_data() {
     local addfb_file="${output_dir}/${data}.txt"  
     local output_log="${output_dir}/log.out"
   
+    rm ${output_dir}/*
+    
     if [ ! -f "$input_file" ]; then  
         echo "输入文件 $input_file 不存在"  
         exit 1  
@@ -20,19 +22,22 @@ process_data() {
         mkdir "$output_dir"  
     fi
   
-    > "$addfb_file"  
+    > ${addfb_file}
     while IFS= read -r line  
     do  
-        echo "$line 10 10" >> "$addfb_file"  
-    done < "$input_file"  
-    if [ -f "${output_log}" ]; then
-        rm ${output_log}
-    fi
+        echo "${line} 10 10" >> "${addfb_file}"  
+    done < "${input_file}"  
+    > ${output_log}
 
     # 正式开始
     set -x
     ../bin/Compact ${data_file} ${addfb_file} ${output_dir} 2> ${output_log}  
+    if [ $? -ne 0 ]; then  
+        echo "Error: ${data}"  
+        exit 1  
+    fi  
     ../bin/Test ${addfb_file} ${output_dir}
+    set +x
 }  
 
 # 启动所有后台作业  
