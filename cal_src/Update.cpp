@@ -25,6 +25,10 @@ void UpdataInit(const Graph &G){
 void update_layer(Graph &G, const std::set<int> &updedg){
     auto &L = G.prop.layer;
     auto cmp = [&](const int &x, const int &y){
+        // std::cout << "cmp: " << x << " " << y << "\n";
+        if(L.layernum[x] == L.layernum[y]){
+            return x < y;
+        }
         return L.layernum[x] < L.layernum[y];
     };
     std::map<int, int> sesup_new, lnum_new;
@@ -60,6 +64,7 @@ void update_layer(Graph &G, const std::set<int> &updedg){
     };
 
     for(auto eid : updedg){
+        // std::cout << eid << " eid\n";
         Qseed.insert(eid);
     }
     // from line 7

@@ -1,0 +1,31 @@
+{  
+    "version": "0.2.0",  
+    "configurations": [  
+        {  
+            "name": "Launch Program",  
+            "type": "cppdbg", // 假设你在调试C++程序  
+            "request": "launch",  
+            "program": "${workspaceFolder}/bin/Test", // 你的可执行文件路径  
+            "args": ["data/small.txt", "data/small_qry.txt", "out"],  
+            "stopAtEntry": false,  
+            "cwd": "${workspaceFolder}",  
+            "environment": [],  
+            "externalConsole": false,  
+            "MIMode": "gdb",  
+            "setupCommands": [  
+                {  
+                    "description": "Enable pretty-printing for gdb",  
+                    "text": "-enable-pretty-printing",  
+                    "ignoreFailures": true  
+                }  
+            ],  
+            "preLaunchTask": "build",  
+            "miDebuggerPath": "/usr/bin/gdb", // 你的GDB路径  
+            "logging": {  
+                "trace": true,  
+                "traceResponse": true,  
+                "engineLogging": true  
+            }  
+        }  
+    ]  
+}

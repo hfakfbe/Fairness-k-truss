@@ -4,7 +4,9 @@ Layer compute_layer(const Graph& G, int q, int F){
     int n = G.n, m = G.m, k = G.prop.k;
     Layer L;
     L.layernum.resize(m);
+    L.sesup.resize(m);
     std::fill(L.layernum.begin(), L.layernum.end(), -1);
+    std::fill(L.sesup.begin(), L.sesup.end(), -1);
 
     VI sup(m);
     VI viddo(n + 1); // vertices_in_degree_decending_order
@@ -71,13 +73,15 @@ Layer compute_layer(const Graph& G, int q, int F){
 
         VI newP;
         for(auto eid : P){
+            L.sesup[eid] = sup[eid];
+            L.layernum[eid] = L.layer.size() - 1;
+        }
+        for(auto eid : P){
             if(removed_edges[eid]){
                 continue;
             }
-            removed_edges[eid] = true;
-            L.layernum[eid] = L.layer.size() - 1;
             L.layer.back().push_back(eid);
-
+            removed_edges[eid] = true;
             auto [u, v] = G.edg[eid];
             hash_table.erase(1ll * v * n + u);
             hash_table.erase(1ll * u * n + v);

@@ -79,9 +79,12 @@ std::tuple<VPII, VI, int> solve(Graph& G, int q, int F, int b){
             std::cerr << "update_layer\n";
             std::set<int> followers;
             for(int j = 0; j < G2.m; j ++){
-                if(G2.prop.ktruss[j] && !T1[j]){
+                if(!G2.prop.ktruss[j] && !G2.prop.ktrussnoq[j] && T1[j]){
                     followers.insert(j);
                 }
+            }
+            for(auto j : followers){
+                std::cerr << "update_layer: j=" << j << "\n";
             }
             update_layer(G2, followers);
 
