@@ -17,6 +17,8 @@
     output S, C
 */
 
+#pragma once
+
 #ifndef debug
 #pragma GCC optimize("Ofast")
 #endif
@@ -219,3 +221,6 @@ VI compute_UB(const Graph& G, const Layer& L, int q, int F);
 
 // 计算anchor
 std::pair<VI, int> compute_anchor(const Graph& G, int q, int F);
+
+// 更新Layer
+void update_layer(Graph &G, const std::set<int> &updedg);
