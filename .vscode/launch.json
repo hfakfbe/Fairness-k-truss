@@ -6,7 +6,7 @@
             "type": "cppdbg", // 假设你在调试C++程序  
             "request": "launch",  
             "program": "${workspaceFolder}/bin/Test", // 你的可执行文件路径  
-            "args": ["data/small.txt", "data/small_qry.txt", "out"],  
+            "args": ["data/test.txt", "data/test_qry.txt", "out"],  
             "stopAtEntry": false,  
             "cwd": "${workspaceFolder}",  
             "environment": [],  

@@ -46,10 +46,16 @@ std::tuple<VPII, VI, int> solve(Graph& G, int q, int F, int b){
             return {res, VI(), k};
         }
 
+        std::ofstream fl("layer_good.out");
+
         for(int i = 0; i < b; i ++){
 
             std::cerr << "compute_layer b=" << i << "\n";
             G2.prop.layer = compute_layer(G2, q, F);
+
+            for(int j = 0; j < G2.m; j ++){
+                fl << G2.prop.layer.layernum[j] << " \n"[j == G2.m - 1];
+            }
 
             std::cerr << "compute_anchor\n";
             auto [T1, a] = compute_anchor(G2, q, F);

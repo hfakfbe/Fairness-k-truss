@@ -30,7 +30,7 @@ std::tuple<VPII, VI, int> solve(Graph& G, int q, int F, int b){
         VI S;
     
         G2.prop.k = k;
-        
+
         std::cerr << "compute_property k=" << k << "\n";
         G2.prop = compute_property(G2, q, F);
 
@@ -46,11 +46,17 @@ std::tuple<VPII, VI, int> solve(Graph& G, int q, int F, int b){
             return {res, VI(), k};
         }
 
+        std::ofstream fl("layer_bad.out");
+
         for(int i = 0; i < b; i ++){
 
             std::cerr << "compute_layer b=" << i << "\n";
             if(i == 0){
                 G2.prop.layer = compute_layer(G2, q, F);
+            }
+            
+            for(int j = 0; j < G2.m; j ++){
+                fl << G2.prop.layer.layernum[j] << " \n"[j == G2.m - 1];
             }
 
             std::cerr << "compute_anchor\n";
@@ -83,9 +89,9 @@ std::tuple<VPII, VI, int> solve(Graph& G, int q, int F, int b){
                     followers.insert(j);
                 }
             }
-            for(auto j : followers){
-                std::cerr << "update_layer: j=" << j << "\n";
-            }
+            // for(auto j : followers){
+            //     std::cerr << "update_layer: j=" << j << "\n";
+            // }
             update_layer(G2, followers);
 
             std::cerr << "update_property\n";

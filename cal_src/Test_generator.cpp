@@ -28,5 +28,5 @@ int main(int argc, char *argv[]){
         std::cout << rng() % a << " ";
     }
 
-    std::cerr << rng() % n + 1 << " " << rng() % std::min(n, int(std::sqrt(n) + 1)) << " " << n;
+    // std::cerr << rng() % n + 1 << " " << rng() % std::min(n, int(std::sqrt(n) + 1)) << " " << n;
 }

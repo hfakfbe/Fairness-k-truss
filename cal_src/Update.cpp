@@ -166,10 +166,10 @@ void update_layer(Graph &G, const std::set<int> &updedg){
     }
 
     // compare the diff
-    std::cout << "lnum_old: ";
-    for(int i = 0; i < G.m; i ++){
-        std::cout << L.layernum[i] << " \n"[i == G.m - 1];
-    }
+    // std::cout << "lnum_old: ";
+    // for(int i = 0; i < G.m; i ++){
+    //     std::cout << L.layernum[i] << " \n"[i == G.m - 1];
+    // }
 
     // update the layer number
     for(auto [eid, ln] : lnum_new){
@@ -182,10 +182,10 @@ void update_layer(Graph &G, const std::set<int> &updedg){
         L.sesup[eid] = ss;
     }
 
-    std::cout << "lnum_new: ";
-    for(int i = 0; i < G.m; i ++){
-        std::cout << L.layernum[i] << " \n"[i == G.m - 1];
-    }
+    // std::cout << "lnum_new: ";
+    // for(int i = 0; i < G.m; i ++){
+    //     std::cout << L.layernum[i] << " \n"[i == G.m - 1];
+    // }
 }
 
 void UpdateUB(){}
