@@ -177,13 +177,14 @@ VI compute_follower(const Graph& G, const Layer& L, int q, int F, int anchor){
             status[eid] = SURVIVED;
 
             for(auto euw : G.adj[u]){
-                if(L.layernum[euw] <= L.layernum[eid] && !ktruss[euw] && !ktrussnoq[euw] && !edge_anchored[euw]){
+                if(L.layernum[euw] < L.layernum[eid] && !ktruss[euw] && !ktrussnoq[euw] && !edge_anchored[euw]){
+                    // 注意符号，是<不是<=，因为弱三角支撑也能引入下层边
                     continue;
                 }
                 int w = e[euw].first ^ e[euw].second ^ u;
                 if(geteid.count(v, w)){
                     int evw = geteid.get(v, w);
-                    if(L.layernum[evw] <= L.layernum[eid] && !ktruss[evw] && !ktrussnoq[evw] && !edge_anchored[evw]){
+                    if(L.layernum[evw] < L.layernum[eid] && !ktruss[evw] && !ktrussnoq[evw] && !edge_anchored[evw]){
                         continue;
                     }
                     //这里考虑加in_queue

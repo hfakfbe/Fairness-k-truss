@@ -4,7 +4,7 @@
         {  
             "label": "build",  
             "type": "shell",  
-            "command": "cd ${workspaceFolder}/cal_src && make test",  
+            "command": "cd ${workspaceFolder}/cal_src && make && make test",  
             "group": {  
                 "kind": "build",  
                 "isDefault": true  

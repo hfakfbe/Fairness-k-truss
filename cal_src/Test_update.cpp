@@ -54,9 +54,10 @@ std::tuple<VPII, VI, int> solve(Graph& G, int q, int F, int b){
             if(i == 0){
                 G2.prop.layer = compute_layer(G2, q, F);
             }
-            
+
+            fl << "(u,v,layernum,sesup)\n";
             for(int j = 0; j < G2.m; j ++){
-                fl << G2.prop.layer.layernum[j] << " \n"[j == G2.m - 1];
+                fl << "(" << G2.edg[j].first << "," << G2.edg[j].second << "|" << G2.prop.layer.layernum[j] << "," << G2.prop.layer.sesup[j] << ")" << " \n"[j == G2.m - 1];
             }
 
             std::cerr << "compute_anchor\n";

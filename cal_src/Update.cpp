@@ -89,10 +89,10 @@ void update_layer(Graph &G, const std::set<int> &updedg){
                     continue;
                 }
                 L.sesup[ee] --; // update ?
-                if(L.sesup[ee] <= G.prop.k - 2){
-                    L.layernum[ee] = l;
-                    Qseed.insert(ee);
-                    Qkp.insert(ee);
+                if(L.sesup[ee] < G.prop.k - 2){
+                    lnum_new[ee] = l;
+                    Qseed.erase(ee);
+                    Qkp.erase(ee);
                 }
             }
             continue;   
@@ -116,8 +116,8 @@ void update_layer(Graph &G, const std::set<int> &updedg){
             if(Gt(euw, eid) && Gt(evw, eid)){
                 if(Gt_new(eid, euw) && Gt_new(eid, evw)){
                     for(auto ee : {euw, evw}){
-                        sesup_new[ee] ++;
-                        if(sesup_new[ee] > G.prop.k - 2){
+                        L.sesup[ee] ++;
+                        if(L.sesup[ee] >= G.prop.k - 2){
                             Qseed.insert(ee);
                         }
                     }
@@ -153,7 +153,7 @@ void update_layer(Graph &G, const std::set<int> &updedg){
                 continue;
             }
             L.sesup[ee] --; // update ?
-            if(L.sesup[ee] <= G.prop.k - 2){
+            if(L.sesup[ee] < G.prop.k - 2){
                 L.layernum[ee] = l + 1; // 是正确的吗?
                 Qkp.erase(ee);
             }
@@ -177,6 +177,7 @@ void update_layer(Graph &G, const std::set<int> &updedg){
     }
     for(auto eid : updedg){
         L.layernum[eid] = -1;
+        L.sesup[eid] = -1;
     }
     for(auto [eid, ss] : sesup_new){
         L.sesup[eid] = ss;
