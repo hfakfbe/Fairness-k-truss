@@ -131,7 +131,7 @@ Layer compute_layer(const Graph& G, int q, int F){
             std::swap(u, v);
         }
         for(auto euw : G.adj[u]){
-            if(G.prop.ktruss[euw] || G.prop.ktrussnoq[euw] || L.layernum[euw] != -1){
+            if(G.prop.ktruss[euw] || G.prop.ktrussnoq[euw] || L.layernum[euw] != -1 || G.prop.trussness[euw] < k - 1){
                 continue;
             }
             int w = G.edg[euw].first ^ G.edg[euw].second ^ u;
@@ -139,7 +139,7 @@ Layer compute_layer(const Graph& G, int q, int F){
                 continue;
             }
             int evw = hash_table[1LL * v * n + w];
-            if(G.prop.ktruss[evw] || G.prop.ktrussnoq[evw] || L.layernum[evw] != -1){
+            if(G.prop.ktruss[evw] || G.prop.ktrussnoq[evw] || L.layernum[evw] != -1 || G.prop.trussness[evw] < k - 1){
                 continue;
             }
             L.layer[0].push_back(euw);
