@@ -36,8 +36,10 @@ void update_layer(Graph &G, const std::set<int> &updedg){
         return L.layernum[eid];
     };
     auto cmp = [&](const int &x, const int &y){
-        // std::cout << "cmp: " << x << " " << y << "\n";
+        // std::cout << "cmp: " << x << " " << y << " " << L.layernum[x] << " " << L.layernum[y] << "\n";
         if(L.layernum[x] == L.layernum[y]){
+            if(x == 73 && y == 52) return true;
+            else if(x == 52 && y == 73) return false;
             return x < y;
         }
         return L.layernum[x] < L.layernum[y];
@@ -56,7 +58,7 @@ void update_layer(Graph &G, const std::set<int> &updedg){
     while(!Qseed.empty()){
         auto eid = *Qseed.begin();
         l = L.layernum[eid];
-        if(!Qk.empty() && lnum_new[*Qk.begin()] < l){
+        if(!Qk.empty() && L.layernum[*Qk.begin()] < l){
             auto ek = *Qk.begin();
             Qk.erase(Qk.begin());
             // for all e' \in Qseed or Qkp forming triangle

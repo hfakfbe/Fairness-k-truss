@@ -90,6 +90,7 @@ std::tuple<VPII, VI, int> solve(Graph& G, int q, int F, int b){
             for(int j = 0; j < G2.m; j ++){
                 if(!G2.prop.ktruss[j] && !G2.prop.ktrussnoq[j] && T1[j]){
                     followers.insert(j);
+                    
                 }
             }
             // for(auto j : followers){
@@ -99,7 +100,18 @@ std::tuple<VPII, VI, int> solve(Graph& G, int q, int F, int b){
             std::cerr << "update_property\n";
             G2.prop = update_property(G2, T1, q, F);
             
+            // G2.edg.push_back({21, 24});
+            // G2.adj[21].push_back(G2.m);
+            // G2.adj[24].push_back(G2.m);
+            // G2.prop.ktruss.push_back(0);
+            // G2.prop.ksubtruss.push_back(1);
+            // G.prop.trussness.push_back(3);
+            // G2.prop.layer.layernum.push_back(2);
+            // G2.prop.layer.sesup.push_back(1);
+            // G2.m ++;
+            // G2.prop.layer.sesup[50] = 2;
             update_layer(G2, followers);
+            // assert(0);
         }
         if(ok){
             return {res, G2.prop.S, k};
