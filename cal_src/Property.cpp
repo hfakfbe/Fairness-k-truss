@@ -70,22 +70,22 @@ Property compute_property(const Graph& G, int q, int F){
     // }
     for(int i = 0; i < G.m; i ++){
         if(res.trussness[i] >= res.k - 1){
-            Q.push(i);
+            // Q.push(i);
             res.ksubtruss[i] = 1;
         }
     }
-    while(!Q.empty()){
-        auto [u, v] = G.edg[Q.front()];
-        Q.pop();
-        for(auto uv : {u, v}){
-            for(auto eid : G.adj[uv]){
-                if(res.trussness[eid] >= res.k - 1 && !res.ksubtruss[eid]){
-                    res.ksubtruss[eid] = 1;
-                    Q.push(eid);
-                }
-            }
-        }
-    }
+    // while(!Q.empty()){
+    //     auto [u, v] = G.edg[Q.front()];
+    //     Q.pop();
+    //     for(auto uv : {u, v}){
+    //         for(auto eid : G.adj[uv]){
+    //             if(res.trussness[eid] >= res.k - 1 && !res.ksubtruss[eid]){
+    //                 res.ksubtruss[eid] = 1;
+    //                 Q.push(eid);
+    //             }
+    //         }
+    //     }
+    // }
     // for(int i = 0; i < G.m; i ++){
     //     if(res.ktrussnoq[i] || res.ktruss[i]){
     //         res.ksubtruss[i] = 0;
@@ -129,22 +129,22 @@ Property update_property(const Graph& G, VI& T, int q, int F){
     // }
     for(int i = 0; i < G.m; i ++){
         if(res.trussness[i] >= res.k - 1){
-            Q.push(i);
+            // Q.push(i);
             res.ksubtruss[i] = 1;
         }
     }
-    while(!Q.empty()){
-        auto [u, v] = G.edg[Q.front()];
-        Q.pop();
-        for(auto uv : {u, v}){
-            for(auto eid : G.adj[uv]){
-                if(res.trussness[eid] >= res.k - 1 && !res.ksubtruss[eid]){
-                    res.ksubtruss[eid] = 1;
-                    Q.push(eid);
-                }
-            }
-        }
-    }
+    // while(!Q.empty()){
+    //     auto [u, v] = G.edg[Q.front()];
+    //     Q.pop();
+    //     for(auto uv : {u, v}){
+    //         for(auto eid : G.adj[uv]){
+    //             if(res.trussness[eid] >= res.k - 1 && !res.ksubtruss[eid]){
+    //                 res.ksubtruss[eid] = 1;
+    //                 Q.push(eid);
+    //             }
+    //         }
+    //     }
+    // }
     // for(int i = 0; i < G.m; i ++){
     //     if(res.ktrussnoq[i] || res.ktruss[i]){
     //         res.ksubtruss[i] = 0;

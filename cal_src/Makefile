@@ -1,7 +1,7 @@
 # 定义编译器
 CXX = g++
-CXXFLAGS = -std=c++20 -O3
-# CXXFLAGS = -std=c++20 -Ddebug -ggdb
+# CXXFLAGS = -std=c++20 -O3
+CXXFLAGS = -std=c++20 -Ddebug -ggdb
 
 # 定义源文件和目标文件
 SOURCES = Decomposition.cpp Layer.cpp Maxk.cpp Property.cpp Read.cpp Update.cpp

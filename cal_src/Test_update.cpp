@@ -16,13 +16,15 @@ std::tuple<VPII, VI, int> solve(Graph& G, int q, int F, int b){
     for(auto eid : G.adj[q]){
         tau_q = std::max(tau_q, G.prop.trussness[eid]);
     }
-    int kmax = tau_q;
+    int kmax = 6;tau_q;
     Graph &G2 = G;
 
     if(kmax == 2){
         std::cerr << "not exist\n";
         return {VPII(), VI(), 2};
     }
+
+    update_init(G2);
 
     for(int k = kmax; k > 2; k --){
         int ok = 0;
@@ -93,10 +95,11 @@ std::tuple<VPII, VI, int> solve(Graph& G, int q, int F, int b){
             // for(auto j : followers){
             //     std::cerr << "update_layer: j=" << j << "\n";
             // }
-            update_layer(G2, followers);
 
             std::cerr << "update_property\n";
             G2.prop = update_property(G2, T1, q, F);
+            
+            update_layer(G2, followers);
         }
         if(ok){
             return {res, G2.prop.S, k};

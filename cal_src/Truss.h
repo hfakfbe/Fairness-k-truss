@@ -224,3 +224,6 @@ std::pair<VI, int> compute_anchor(const Graph& G, int q, int F);
 
 // 更新Layer
 void update_layer(Graph &G, const std::set<int> &updedg);
+
+// 准备
+void update_init(const Graph &G);

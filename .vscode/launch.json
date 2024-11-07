@@ -5,7 +5,7 @@
             "name": "Launch Program",  
             "type": "cppdbg", // 假设你在调试C++程序  
             "request": "launch",  
-            "program": "${workspaceFolder}/bin/Fair", // 你的可执行文件路径  
+            "program": "${workspaceFolder}/bin/Test", // 你的可执行文件路径  
             "args": ["data/test.txt", "data/test_qry.txt", "out"],  
             "stopAtEntry": false,  
             "cwd": "${workspaceFolder}",  

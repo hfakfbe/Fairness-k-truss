@@ -38,11 +38,11 @@ Layer compute_layer(const Graph& G, int q, int F){
             } //如果v已经被访问过，continue
             for(auto w : A[u]){
                 if(A[v].count(w)){
-                    int evw = hash_table[1ll * v * n + w];
+                    int evw = hash_table[1LL * v * n + w];
                     if(!G.prop.ksubtruss[evw]){
                         continue;
                     }
-                    int euw = hash_table[1ll * u * n + w];
+                    int euw = hash_table[1LL * u * n + w];
                     if(!G.prop.ksubtruss[euw]){
                         continue;
                     }
@@ -83,8 +83,8 @@ Layer compute_layer(const Graph& G, int q, int F){
             L.layer.back().push_back(eid);
             removed_edges[eid] = true;
             auto [u, v] = G.edg[eid];
-            hash_table.erase(1ll * v * n + u);
-            hash_table.erase(1ll * u * n + v);
+            hash_table.erase(1LL * v * n + u);
+            hash_table.erase(1LL * u * n + v);
             e_link.erase(eid << 1);
             e_link.erase(eid << 1 | 1);
 
