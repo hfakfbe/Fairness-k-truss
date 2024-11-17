@@ -38,6 +38,12 @@
 #include <climits>
 #include <set>
 
+#ifdef debug
+#define DEBUG(x) do{ std::cerr << (x); } while(0)
+#else
+#define DEBUG(x) do{ ; } while(0)
+#endif
+
 using i64 = long long;
 using MII = std::unordered_map<int, int>;
 using VMII = std::vector<MII>;

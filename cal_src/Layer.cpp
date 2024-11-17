@@ -282,6 +282,7 @@ VI compute_UB(const Graph& G, const Layer& L, int q, int F){
         }
     }
     
+#ifdef debug
     for(int i = 0; i < G.m; i ++){
         if(layer_deg[i] != 0){
             std::cerr << "Graph:\n";
@@ -297,6 +298,7 @@ VI compute_UB(const Graph& G, const Layer& L, int q, int F){
             assert(0);
         }
     }
+#endif
 
     // 计算点
     for(int i = 1; i <= n; i ++){

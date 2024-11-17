@@ -1,26 +1,15 @@
 #include "Truss.h"
 
-std::tuple<VPII, VI, int> solve(Graph& G, int q, int F, int b){
-
-    std::cerr << "decomposition\n";
-    
-    clock_t beg = clock(), end;
-    G.prop.trussness = decomposition(G); // ac
-    end = clock();
-    std::cerr << end - beg << "us\n";
-    
-    std::cerr << "compute_maxk\n";
-    // auto [G2, kmax] = compute_maxk(G, q, F);
-    // std::cerr << "G2 has " << G2.m << " edges\n";
+std::tuple<VPII, VI, int> solve(Graph& G2, int q, int F, int b){
+    DEBUG("compute_maxk\n");
     int tau_q = 0;
-    for(auto eid : G.adj[q]){
-        tau_q = std::max(tau_q, G.prop.trussness[eid]);
+    for(auto eid : G2.adj[q]){
+        tau_q = std::max(tau_q, G2.prop.trussness[eid]);
     }
     int kmax = tau_q;
-    Graph &G2 = G;
 
     if(kmax == 2){
-        std::cerr << "not exist\n";
+        DEBUG("not exist\n");
         return {VPII(), VI(), 2};
     }
 
@@ -31,11 +20,11 @@ std::tuple<VPII, VI, int> solve(Graph& G, int q, int F, int b){
     
         G2.prop.k = k;
         
-        std::cerr << "compute_property k=" << k << "\n";
+        DEBUG(std::string("compute_property k=") + std::to_string(k) + "\n");
         G2.prop = compute_property(G2, q, F);
 
         int val = compute_value(G2, G2.prop.ktruss, F);
-        std::cerr << "current val: " << val << "\n";
+        DEBUG(std::string("current val: ") + std::to_string(val) + "\n");
         
         if(val == F * G2.A){
             for(int i = 0; i < G2.m; i ++){
@@ -48,26 +37,21 @@ std::tuple<VPII, VI, int> solve(Graph& G, int q, int F, int b){
 
         for(int i = 0; i < b; i ++){
 
-            std::cerr << "compute_layer b=" << i << "\n";
+            DEBUG(std::string("compute_layer b=") + std::to_string(i) + "\n");
             G2.prop.layer = compute_layer(G2, q, F);
 
-            std::cerr << "compute_anchor\n";
+            DEBUG("compute_anchor\n")l
             auto [T1, a] = compute_anchor(G2, q, F);
 
             if(T1.empty()){
-                std::cerr << "T1 empty\n";
+                DEBUG("T1 empty");
                 break;
             }
 
             S.push_back(a);
 
-            // std::cerr << a << ": ";
-            // for(int i = 0; i < G2.m; i ++){
-            //     std::cerr << T1[i] << " \n"[i == G2.m - 1];
-            // }
-
             int curval = compute_value(G2, T1, F);
-            std::cerr << "now the val is " << curval << "\n";
+            DEBUG(std::string("now the val is ") + std::to_string(curval) + "\n");
             if(curval == F * G2.A){
                 ok = 1;
                 for(int j = 0; j < G2.m; j ++){
@@ -79,7 +63,7 @@ std::tuple<VPII, VI, int> solve(Graph& G, int q, int F, int b){
                 break;
             }
 
-            std::cerr << "update_property\n";
+            DEBUG("update_property\n");
             G2.prop = update_property(G2, T1, q, F);
         }
         if(ok){
@@ -90,29 +74,57 @@ std::tuple<VPII, VI, int> solve(Graph& G, int q, int F, int b){
     return {VPII(), VI(), 2};
 }
 
+// data qry out trussness
 int main(int argc, char *argv[]){
-    if(argc != 4){
-        std::cerr << "main: 3 arguments!\n";
+    if(argc != 5){
+        std::cerr << "main: 4 arguments!\n";
         exit(1);
     }
 
     Graph G = read_graph(argv[1]);
+    if(fs::exists(argv[4])){
+        G.prop.trussness.resize(G.m); 
+        std::ifstream tin(argv[4]);
+        for(int i = 0; i < G.m; i ++){
+            tin >> G.prop.trussness[i];
+        }
+    }else{
+        G.prop.trussness = decomposition(G);
+        std::ofstream tout(argv[4]);
+        for(int i = 0; i < G.m; i ++){
+            tout << G.prop.trussness[i] << " ";
+        }
+        tout.close();
+    }
 
-    std::vector<std::tuple<int, int, int>> query = read_query(argv[2]);
+    std::vector<std::tuple<int, int, int, int>> query = read_query(argv[2]);
 
     for(int i = 0; i < query.size(); i ++){
-        auto [q, F, b] = query[i];
+        auto [q, F, R, b] = query[i];
 
         std::cerr << "--------------------------------------------------------------------------\n";
-        std::cerr << "q: " << q << " F: " << F << " b: " << b << "\n";
+        std::cerr << "q: " << q << " F: " << F << " R: " << R << " b: " << b << "\n";
+
+        std::string str = argv[3];
+        str += "/" + std::to_string(i) + ".out";
+        if(fs::exists(str)){
+            continue;
+        }
+
+        if(R != G.A){
+            G.A = R;
+            srand(1);
+            for(int j = 1; j <= G.n; j ++){
+                G.attr[j] = rand() % R;
+            }
+        }
+
         clock_t beg = clock(), end;
         auto [res, S, k] = solve(G, q, F, b);
         end = clock();
         
         std::cerr << end - beg << "us\n";
 
-        std::string str = argv[3];
-        str += "/" + std::to_string(i) + ".out";
         std::ofstream outfile(str);
         std::set<int> set;
 

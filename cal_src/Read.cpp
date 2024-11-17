@@ -23,12 +23,12 @@ Graph read_graph(std::string file){
     return G;
 }
 
-std::vector<std::tuple<int, int, int>> read_query(std::string file){
+std::vector<std::tuple<int, int, int, int>> read_query(std::string file){
     std::ifstream fin(file);
-    int q, F, b;
-    std::vector<std::tuple<int, int, int>> query;
-    while(fin >> q >> F >> b){
-        query.push_back({q, F, b});
+    int q, F, R, b;
+    std::vector<std::tuple<int, int, int, int>> query;
+    while(fin >> q >> F >> R >> b){
+        query.push_back({q, F, R, b});
     }
     return query;
 }
