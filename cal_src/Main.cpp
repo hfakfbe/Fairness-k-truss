@@ -40,7 +40,7 @@ std::tuple<VPII, VI, int> solve(Graph& G2, int q, int F, int b){
             DEBUG(std::string("compute_layer b=") + std::to_string(i) + "\n");
             G2.prop.layer = compute_layer(G2, q, F);
 
-            DEBUG("compute_anchor\n")l
+            DEBUG("compute_anchor\n");
             auto [T1, a] = compute_anchor(G2, q, F);
 
             if(T1.empty()){

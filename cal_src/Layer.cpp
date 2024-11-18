@@ -144,7 +144,12 @@ Layer compute_layer(const Graph& G, int q, int F){
         }
     }
 
+#ifdef NOUB
+    L.UB = VI(G.m, 1e9);
+#else
     L.UB = compute_UB(G, L, q, F);
+#endif
+
     return L;
 }
 

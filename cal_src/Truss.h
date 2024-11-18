@@ -37,12 +37,15 @@
 #include <cassert>
 #include <climits>
 #include <set>
+#include <filesystem>
 
 #ifdef debug
 #define DEBUG(x) do{ std::cerr << (x); } while(0)
 #else
 #define DEBUG(x) do{ ; } while(0)
 #endif
+
+namespace fs = std::filesystem;
 
 using i64 = long long;
 using MII = std::unordered_map<int, int>;
@@ -194,7 +197,7 @@ struct hash_map {
 Graph read_graph(std::string file);
 
 // 读取查询
-std::vector<std::tuple<int, int, int>> read_query(std::string file);
+std::vector<std::tuple<int, int, int, int>> read_query(std::string file);
 
 // truss分解
 VI decomposition(const Graph& G);
