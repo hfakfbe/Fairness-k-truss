@@ -2,14 +2,16 @@
 
 std::tuple<VPII, VI, int> solve(Graph& G2, int q, int F, int b){
     DEBUG("compute_maxk\n");
-    int tau_q = 0;
+    int tau_q = 2;
     for(auto eid : G2.adj[q]){
         tau_q = std::max(tau_q, G2.prop.trussness[eid]);
+        DEBUG(std::to_string(G2.prop.trussness[eid]) + " ");
     }
+    DEBUG("\n");
     int kmax = tau_q;
 
-    if(kmax == 2){
-        DEBUG("not exist\n");
+    if(kmax <= 2){
+        DEBUG("solve: not exist\n");
         return {VPII(), VI(), 2};
     }
 
@@ -82,7 +84,10 @@ int main(int argc, char *argv[]){
     }
 
     Graph G = read_graph(argv[1]);
+    DEBUG(std::string("n=") + std::to_string(G.n) + " m=" + std::to_string(G.m) + "\n");
+
     if(fs::exists(argv[4])){
+        DEBUG("load trussness\n");
         G.prop.trussness.resize(G.m); 
         std::ifstream tin(argv[4]);
         for(int i = 0; i < G.m; i ++){

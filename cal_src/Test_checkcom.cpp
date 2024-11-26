@@ -2,7 +2,7 @@
 #include <mutex>
 #include <thread>
 
-constexpr int MAXN = INT_MAX;
+constexpr int MAXN = 100000;
 
 struct checkstr{
     int n, m, S, k, d;
@@ -66,7 +66,7 @@ checkstr check_community(std::ifstream &fin, int q, int F){
         fin >> vertices[i];
         p[vertices[i]] = i;
     }
-    if(m == 0 || n > MAXN){
+    if(m == 0 || m > MAXN){
         checkstr res;
         res.d = -1;
         return res;
@@ -76,7 +76,7 @@ checkstr check_community(std::ifstream &fin, int q, int F){
     global_max_d = 0;
 
     // 确定合适的线程数，通常是系统硬件线程数
-    int num_threads = std::min<int>(std::thread::hardware_concurrency(), n);
+    int num_threads = std::min<int>({std::thread::hardware_concurrency(), n, 16});
     int vertices_per_thread = n / num_threads;  // 每个线程处理的顶点数
     int remaining_vertices = n % num_threads;   // 处理不均分的顶点
 
@@ -126,7 +126,7 @@ int main(int argc, char *argv[]){
         if(cks.d != -1){
             fout << q << " " << F << " " << R << " " << b << " d: " << cks.d << " n: " << cks.n << " m: " << cks.m << " S: " << cks.S << " k: " << cks.k << " t: " << 1.0 * cks.t / (1e6) << "\n";
         }else{
-            fout << q << " " << F << " " << R << " " << b << "-1\n";
+            fout << q << " " << F << " " << R << " " << b << " -1\n";
         }
     }
 }

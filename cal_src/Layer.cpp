@@ -147,7 +147,9 @@ Layer compute_layer(const Graph& G, int q, int F){
 #ifdef NOUB
     L.UB = VI(G.m, 1e9);
 #else
+    clock_t start = clock();
     L.UB = compute_UB(G, L, q, F);
+    // printf("UB: %.2lf\n", (clock() - start) / (double)CLOCKS_PER_SEC);
 #endif
 
     return L;

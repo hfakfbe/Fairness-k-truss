@@ -349,6 +349,8 @@ std::pair<VI, int> compute_anchor(const Graph& G, int q, int F){
     //开始逐个计算
     compute_anchor_init(G);
 
+    clock_t start = clock();
+
     for(int i = 0; i < len; i ++){
 #ifdef COMPACTNESS
         if(L.UB[layerpoint[i]] == 0){
@@ -440,6 +442,7 @@ std::pair<VI, int> compute_anchor(const Graph& G, int q, int F){
             << " followers " << followers.size() << "\n";
 #endif
     }
+    // printf("AN: %.2lf\n", (clock() - start) / (double)CLOCKS_PER_SEC);
 
     if(maxval <= 0){
         return {VI(), -1};
