@@ -16,11 +16,11 @@ Graph read_graph(std::string file){
         G.prop.deg[u] ++;
         G.prop.deg[v] ++;
     }
-    // for(int i = 1; i <= G.n; i ++){
-    //     fin >> G.attr[i];
-    //     G.A = std::max(G.A, G.attr[i] + 1);
-    // }
-    G.A = -1;
+    for(int i = 1; i <= G.n; i ++){
+        fin >> G.attr[i];
+        G.A = std::max(G.A, G.attr[i] + 1);
+    }
+    // G.A = -1;
     return G;
 }
 

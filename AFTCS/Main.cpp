@@ -117,6 +117,7 @@ int main(int argc, char *argv[]){
         }
 
         if(R != G.A){
+            std::cerr << "change attr from " << G.A << " to " << R << "!\n";
             G.A = R;
             srand(1);
             for(int j = 1; j <= G.n; j ++){
@@ -149,6 +150,18 @@ int main(int argc, char *argv[]){
             outfile << v << " ";
         }
         outfile << "\n";
+        //output attr
+        std::vector<int> cnt(G.A);
+        for(auto v : set){
+            outfile << G.attr[v] << " ";
+            cnt[G.attr[v]] ++;
+        }
+        outfile << "\n";
+        for(auto a : cnt){
+            outfile << a << " ";
+        }
+        outfile << "\n";
+        //
         if(k == 2){
             outfile << "-1\nNot Exist!";
         }else{
