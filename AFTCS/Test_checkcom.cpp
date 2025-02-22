@@ -5,7 +5,7 @@
 int MAXN = 100000;
 
 struct checkstr{
-    int n, m, S, k, d;
+    int n, m, S, k, d, dif;
     clock_t t;
 };
 
@@ -74,6 +74,7 @@ checkstr check_community(std::ifstream &fin, int q, int F){
     res.k = k;
     res.d = -1;
     res.t = -1;
+    res.dif = -1;
 
     if(m == 0){
         return res;
@@ -102,6 +103,18 @@ checkstr check_community(std::ifstream &fin, int q, int F){
         res.d = global_max_d;
     }
 
+    std::string junk;
+    std::getline(fin, junk);
+    std::getline(fin, junk);
+    std::getline(fin, junk);
+    std::vector<int> a;
+    std::stringstream ss(junk);
+    int tmp;
+    while(ss >> tmp){
+        a.push_back(tmp);
+    }
+    std::sort(a.begin(), a.end());
+    res.dif = a.back() - a[0];
     fin >> res.t; // time us
     return res;
 }
@@ -128,6 +141,6 @@ int main(int argc, char *argv[]){
         }
         std::ifstream fin(str);
         auto cks = check_community(fin, q, F);
-        fout << q << " " << F << " " << R << " " << b << " d: " << cks.d << " n: " << cks.n << " m: " << cks.m << " S: " << cks.S << " k: " << cks.k << " t: " << 1.0 * cks.t / (1e6) << "\n";
+        fout << q << " " << F << " " << R << " " << b << " d: " << cks.d << " n: " << cks.n << " m: " << cks.m << " S: " << cks.S << " k: " << cks.k << " t: " << cks.t << " " << cks.dif << "\n";
     }
 }

@@ -8,7 +8,7 @@ const int maxn = 4050005;
 const int maxm = 120000000;
 const int maxa = 10;
 int _gamma = 1;
-
+const double alp = 0.99;
 struct HashTable
 {
     const int mod = maxm << 2;
@@ -134,7 +134,7 @@ struct Graph {
 
 vector<int> G[maxn]; // 存原图每个点连出的边的编号
 int D[maxn]; // 存原图每个点的点度
-int n, m, F, q;
+int n, m, theta, q;
 HashTable hash_table_1, hash_table_2;
 // map<pair<int, int>, int> mp1, mp2;
 edge_link e_link;
@@ -149,7 +149,7 @@ int dis[maxn];
 map<string, pair<int, int> > data_info = {{"facebook_combined", {4039, 88234}}, {"DBLP", {500000, 1049866}}, {"com-lj.ungraph", {4040000, 34681189}}};
 
 int compute_diam(Graph &C) {
-
+    cerr << "Computing diameter..." << endl;
     int diam = 0;
     for(const int & w : C.V) {
         // cerr << w << " ";
@@ -169,6 +169,7 @@ int compute_diam(Graph &C) {
         }
         for(const int & t : C.V) diam = max(diam, dis[t]);
     }
+
     // for(const int & t : C.V) cout << t << " ";
     // cout << endl;
     return diam;
