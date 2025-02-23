@@ -1,6 +1,6 @@
 # Fairness-k-truss
 
-This repository is for the following article: **With Anchors or Not: Fairness-aware Truss-based Community Search on Attributed Graphs**
+This repository is for the following article:
 
 # Datesets
 
